@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissor Game</title>
+</head>
+<body>
+    <button onclick="playGame('rock')">Rock</button>
+    <button onclick="playGame('paper')">Paper</button>
+    <button onclick="playGame('scissor')">Scissor</button>
+    <button onclick="restartGame()">Restart Game</button>
+
+    <script>
+
+        let computerMove = '';
+
+        let gameScore = JSON.parse(localStorage.getItem('score')) || {
+            'win': 0,
+            'lose': 0,
+            'draw': 0,
+        };
+
+        let result = '';
+
+        function playGame(playerMove){
+
+            getComputerMoves();
+
+            if(playerMove === 'rock'){
+                checkComputerMoveForRock();
+            }else if(playerMove === 'paper'){
+                checkComputerMoveForPaper();
+            }else{
+                checkComputerMoveForScissor();
+            }
+
+            localStorage.setItem('score', JSON.stringify(gameScore));
+
+            alert(`${result} 
+            Your move: ${playerMove}. 
+            Computer move: ${computerMove}.
+            Win:${gameScore.win}, Lose:${gameScore.lose}, Draw:${gameScore.draw}`);
+        }
+
+        function getComputerMoves(){
+           let randomNumber = Math.random();
+           
+           if(randomNumber >= 0 && randomNumber < 1/3){
+               computerMove = 'rock';
+           }else if(randomNumber >= 1/3 && randomNumber < 2/3){
+               computerMove = 'paper';
+           }else{
+               computerMove = 'scissor';
+           }
+        }
+
+        function checkComputerMoveForRock(){
+            if(computerMove === 'rock'){
+                    gameScore.draw += 1;
+                    result = 'Draw!';
+                }else if(computerMove === 'paper'){
+                    gameScore.lose += 1;
+                    result = 'You Lose!';
+                }else{
+                    gameScore.win += 1;
+                    result = 'You Win!'; 
+                }
+        }
+
+        function checkComputerMoveForPaper(){
+            if(computerMove === 'paper'){
+                    gameScore.draw += 1;
+                    result = 'Draw!';
+                }else if(computerMove === 'scissor'){
+                    gameScore.lose += 1;
+                    result = 'You Lose!';
+                }else{
+                    gameScore.win += 1;
+                    result = 'You Win!'; 
+                }
+        }
+
+        function checkComputerMoveForScissor(){
+            if(computerMove === 'scissor'){
+                    gameScore.draw += 1;
+                    result = 'Draw!';
+                }else if(computerMove === 'rock'){
+                    gameScore.lose += 1;
+                    result = 'You Lose!';
+                }else{
+                    gameScore.win += 1;
+                    result = 'You Win!'; 
+                }
+        }
+
+        function restartGame(){
+            gameScore.win = 0;
+            gameScore.lose = 0;
+            gameScore.draw = 0;
+            
+            localStorage.removeItem('score');
+        }
+
+
+    </script>
+</body>
+</html>

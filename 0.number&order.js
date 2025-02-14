@@ -22,3 +22,6 @@ Order of Operation in JavaScript
 // Math.round(); is use to convert floating point number to the nearest integer
 console.log(Math.round(2.2));
 console.log(Math.round(2.8));
+
+//Math.random() is use to get random number.
+console.log(Math.random());
