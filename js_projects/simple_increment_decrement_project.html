@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Increment Decrement</title>
+</head>
+<body>
+    <button onclick="alert(message)">show cart</button>
+    <button onclick="addToCart(1)">+</button>
+    <button onclick="removeFromCart()">-</button>
+    <button onclick="addToCart(2)">+2</button>
+    <button onclick="addToCart(3)">+3</button>
+    <button onclick="resetCart()">reset cart</button>
+
+    <script>
+        let cartQuantity = 0;
+        let message = 'Your cart: 0';
+
+        function addToCart(num){
+            cartQuantity = cartQuantity+num;
+            message = 'Your Cart: '+ cartQuantity;
+            alert('Your Cart: ' + cartQuantity);
+        }
+
+        function removeFromCart(){
+            if(cartQuantity > 0){
+                cartQuantity = cartQuantity-1;
+                message = 'Your Cart: '+ cartQuantity;
+                alert('Your Cart: ' + cartQuantity);
+            }else{
+                alert('No item to remove');
+            }
+
+        }
+
+        function resetCart(){
+            cartQuantity = 0;
+            message = 'Your cart: 0';
+        }
+
+    </script>
+</body>
+</html>
