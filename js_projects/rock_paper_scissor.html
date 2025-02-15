@@ -5,15 +5,173 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissor Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Micro+5&display=swap" rel="stylesheet">
+    <style>
+        body{
+            background: #121212;
+            position: relative;
+            height: 100vh;
+        }
+        nav {
+            position: absolute;
+            width: 90%;
+            height: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        nav div{
+            position: absolute;
+        }
+        nav img {
+            width: 32px;
+            padding-top: 6px;
+        }
+        .scoreboard {
+            right: 12px;
+            width: 30%;
+            text-align: end;
+            top: 7px;
+        }
+        .scoreboard span {
+            padding-left: 12px;
+            font-size: 26px;
+            color: white;
+            font-family: "Micro 5", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .scoreboard span b{
+            color: #F2A326;
+        }
+
+        .game-buttons{
+            position: absolute;
+            left: 50%;
+            bottom: 2%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 50%;
+            height: 75px;
+        }
+        .game-buttons button {
+            text-align: center;
+            background: transparent;
+            border: 3px solid #F2A326;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        .restart-btn{
+            margin-left: 15px;
+        }
+        .game-buttons button img{
+            width: 35px;
+        }
+        .game-screen{
+            position: absolute;
+            left: 50%;
+            top: 20%;
+            transform: translateX(-50%);
+            width: 90%;
+            z-index: -1;
+            color: white;
+            font-family: "Micro 5", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .screen-box{
+            position: absolute;
+            width: 50%;
+            border: 1px solid white;
+            text-align: center;
+        }
+        .screen-box.computer-screen{
+            right: 0;
+        }
+        .screen-box h3{
+            font-size: 26px;
+        }
+        .game-status{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #121212;
+            border: 1px solid white;
+            padding: 4px 34px;
+            line-height: 24px;
+            text-align: center;
+            z-index: 1;
+        }
+        .game-status.success{
+            background: #28a745;
+            border: 1px solid #28a745;
+        }
+        .game-status.failed{
+            background: #dc3545;
+            border: 1px solid #dc3545;
+        }
+        .game-status.warning{
+            background: #F2A326;
+            border: 1px solid #F2A326;
+        }
+        .success-txt{
+            color: #28a745!important;
+        }
+        .fail-txt{
+            color: #dc3545!important;
+        }
+    </style>
 </head>
 <body>
-    <button onclick="playGame('rock')">Rock</button>
-    <button onclick="playGame('paper')">Paper</button>
-    <button onclick="playGame('scissor')">Scissor</button>
-    <button onclick="restartGame()">Restart Game</button>
+
+    <nav>
+        <div><img src="assets/logo.png" alt="logo"></div>
+        <div class="scoreboard">
+            <span>Win: <b class="success-txt">0</b></span>
+            <span>Lose: <b class="fail-txt">0</b></span>
+            <span>Draw: <b>0</b></span>
+        </div>
+    </nav>
+
+    <div class="game-screen">
+        <div class="screen-box player-screen">
+            <h3>(You)</h3>
+            <div class="user-img">
+                <img src="assets/user.png" alt="">
+                <p>User</p>
+            </div>
+        </div>
+        <div class="game-status">
+            <span class="game-result"></span>
+        </div>
+        <div class="screen-box computer-screen">
+            <h3>(Computer)</h3>
+            <div class="computer-img">
+                <img src="assets/robot.png" alt="">
+                <p>Robot</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-buttons">
+        <button onclick="playGame('rock')"><img src="assets/rock.png" alt="rock"></button>
+        <button onclick="playGame('paper')"><img src="assets/paper.png" alt="paper"></button>
+        <button onclick="playGame('scissor')"><img src="assets/scissor.png" alt="scissor"></button>
+        <button onclick="restartGame()" class="restart-btn"><img src="assets/restart.png" alt="restart"></button>
+        
+        <audio src="assets/sound/button.mp3" class="play-button"></audio>
+        <audio src="assets/sound/restart.mp3" class="restart-button"></audio>
+    </div>
+
 
     <script>
-
+        let buttonSoundElement = document.querySelector('.play-button');
+        let userMoveElement = document.querySelector('.user-img');
+        let computerMoveElement = document.querySelector('.computer-img');
+        let gameStatusElement = document.querySelector('.game-status');
         let computerMove = '';
 
         let gameScore = JSON.parse(localStorage.getItem('score')) || {
@@ -22,10 +180,17 @@
             'draw': 0,
         };
 
-        let result = '';
+        let result = document.querySelector('.game-result');
+        result.innerHTML = 'VS';
+
+        let scoreBoard = document.querySelector('.scoreboard');
+        scoreBoard.innerHTML = `
+            <span>Win: <b class="success-txt">${gameScore.win}</b></span>
+            <span>Lose: <b class="fail-txt">${gameScore.lose}</b></span>
+            <span>Draw: <b>${gameScore.draw}</b></span>
+        `;
 
         function playGame(playerMove){
-
             getComputerMoves();
 
             if(playerMove === 'rock'){
@@ -38,10 +203,14 @@
 
             localStorage.setItem('score', JSON.stringify(gameScore));
 
-            alert(`${result} 
-            Your move: ${playerMove}. 
-            Computer move: ${computerMove}.
-            Win:${gameScore.win}, Lose:${gameScore.lose}, Draw:${gameScore.draw}`);
+            getScoreBoard();
+            getUserAndComputerMoveElements(playerMove, computerMove);
+            updateGameStatus();
+
+            result.innerHTML = `${result.innerHTML}`;
+
+            buttonSoundElement.play();
+
         }
 
         function getComputerMoves(){
@@ -59,39 +228,39 @@
         function checkComputerMoveForRock(){
             if(computerMove === 'rock'){
                     gameScore.draw += 1;
-                    result = 'Draw!';
+                    result.innerHTML = 'Draw!';
                 }else if(computerMove === 'paper'){
                     gameScore.lose += 1;
-                    result = 'You Lose!';
+                    result.innerHTML = 'You Lose!';
                 }else{
                     gameScore.win += 1;
-                    result = 'You Win!'; 
+                    result.innerHTML = 'You Win!'; 
                 }
         }
 
         function checkComputerMoveForPaper(){
             if(computerMove === 'paper'){
                     gameScore.draw += 1;
-                    result = 'Draw!';
+                    result.innerHTML = 'Draw!';
                 }else if(computerMove === 'scissor'){
                     gameScore.lose += 1;
-                    result = 'You Lose!';
+                    result.innerHTML = 'You Lose!';
                 }else{
                     gameScore.win += 1;
-                    result = 'You Win!'; 
+                    result.innerHTML = 'You Win!'; 
                 }
         }
 
         function checkComputerMoveForScissor(){
             if(computerMove === 'scissor'){
                     gameScore.draw += 1;
-                    result = 'Draw!';
+                    result.innerHTML = 'Draw!';
                 }else if(computerMove === 'rock'){
                     gameScore.lose += 1;
-                    result = 'You Lose!';
+                    result.innerHTML = 'You Lose!';
                 }else{
                     gameScore.win += 1;
-                    result = 'You Win!'; 
+                    result.innerHTML = 'You Win!'; 
                 }
         }
 
@@ -99,10 +268,57 @@
             gameScore.win = 0;
             gameScore.lose = 0;
             gameScore.draw = 0;
-            
             localStorage.removeItem('score');
+            
+            getScoreBoard();
+            getUserAndComputerMoveElements('user', 'robot');
+            resetGameStatus();
+
+            buttonSoundElement.play();
         }
 
+        function updateGameStatus(){
+            if(result.innerHTML == 'You Win!'){
+                gameStatusElement.classList.remove('failed');
+                gameStatusElement.classList.remove('warning');
+                gameStatusElement.classList.add('success');
+            }else if(result.innerHTML == 'You Lose!'){
+                gameStatusElement.classList.remove('success');
+                gameStatusElement.classList.remove('warning');
+                gameStatusElement.classList.add('failed');
+            }else{
+                gameStatusElement.classList.remove('success');
+                gameStatusElement.classList.remove('failed');
+                gameStatusElement.classList.add('warning');
+            }
+        }
+
+        function resetGameStatus(){
+            gameStatusElement.classList.remove('failed');
+            gameStatusElement.classList.remove('warning');
+            gameStatusElement.classList.remove('success');
+            result.innerHTML = 'VS';
+        }
+
+        function getUserAndComputerMoveElements(playerMove, computerMove){
+            userMoveElement.innerHTML = `
+            <img src="assets/${playerMove}.png" alt="">
+            <p>${playerMove}</p>
+            `;
+
+            computerMoveElement.innerHTML = `
+            <img src="assets/${computerMove}.png" alt="">
+            <p>${computerMove}</p>
+            `;
+        }
+
+        function getScoreBoard(){
+            scoreBoard.innerHTML = `
+            <span>Win: <b class="success-txt">${gameScore.win}</b></span>
+            <span>Lose: <b class="fail-txt">${gameScore.lose}</b></span>
+            <span>Draw: <b>${gameScore.draw}</b></span>
+            `;
+        }
 
     </script>
 </body>
